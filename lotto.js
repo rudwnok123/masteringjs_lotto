@@ -17,7 +17,6 @@
 // [13, 14, 18, 21, 23, 35]
 // [17, 21, 29, 37, 42, 45]
 // [3, 8, 27, 30, 35, 44]
-
 // > setLuckyNumber([1, 2, 3, 4, 5, 6]);
 
 // > 당첨 통계
@@ -27,46 +26,44 @@
 // 5개 일치 (1500000원)- 0개
 // 6개 일치 (2000000000원)- 0개
 
+const lottoBuyArr = buyLottos(14000);
+setLuckyNumber([13, 21, 14, 18, 23, 35]);
 
-buyLottos();
-setLuckyNumber([1, 2, 3, 4, 5, 6]);
-
-// 로또를 산다
 function buyLottos(money) {
-    // 로또 가격은 한개에 천원이며 지불한 금액만큼 전부 구매된다.
+    const count = money / 1000;
     console.log("로또 14개를 발행했습니다.");
 
-    // 구매 개수만큼 번호가 부여된다.
-    assignNumber(count);
+    return assignNumbers(count);
 }
 
-// 로또 번호 발급
-function assignNumber(count) {
-    // 로또번호 범위는 1~45
-    // 로또 1개당 6개 번호가 부여되며 중복값은 없다.
-    // 배열 형태로 return
+function assignNumbers(count) {
+    const lottoBuyArr = [];
+    for(let i=0; i<count; i++) {
+        const myLottoNumbersSet = new Set();
+        while(myLottoNumbersSet.size < 6) {
+            myLottoNumbersSet.add(Math.floor(Math.random() * 45) + 1);
+        }
+        lottoBuyArr.push(myLottoNumbersSet);
+    }
+
+    return lottoBuyArr;
 }
 
-// 로또 번호 추첨
-function setLuckyNumber(arr) {
-    let luckyNumberArr = arr;
-    // 당첨번호 set
-    announceLotto(arr);
+function setLuckyNumber(luckyNumberArr) {
+    const winCountArr = [0, 0, 0, 0, 0, 0];
+    lottoBuyArr.forEach((myLottoNumbersSet) => {
+        let count = 0;
+        luckyNumberArr.forEach((luckyNumber) => {
+            if(myLottoNumbersSet.has(luckyNumber)) count++;
+        });
+        winCountArr[count - 1] += 1;
+    });
+    announceLotto(winCountArr);
 }
 
-// 당첨자 발표
-function announceLotto() {
-    // 구매한 로또의 번호와 당첨번호를 비교한다.
-    // 구매한 로또의 당첨 개수를 아래와 같은 형식으로 보여준다.
-    // > 당첨 통계
-    // ---------
-    // 3개 일치 (5000원)- 1개
-    // 4개 일치 (50000원)- 0개
-    // 5개 일치 (1500000원)- 0개
-    // 6개 일치 (2000000000원)- 0개
-
-    console.log("3개 일치 (5000원)- 1개");
-    console.log("4개 일치 (50000원)- 0개");
-    console.log("5개 일치 (1500000원)- 0개");
-    console.log("6개 일치 (2000000000원)- 0개");
+function announceLotto(winCountArr) {
+    console.log("3개 일치 (5000원)- " + winCountArr[2] + "개");
+    console.log("4개 일치 (50000원)- " + winCountArr[3] + "개");
+    console.log("5개 일치 (1500000원)- " + winCountArr[4] + "개");
+    console.log("6개 일치 (2000000000원)- " + winCountArr[5] + "개");
 }
