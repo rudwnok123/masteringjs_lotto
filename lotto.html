@@ -1,46 +1,81 @@
 <script>
-const widget = {
-    "debug": "on",
-    "window": {
-        "title": "Sample Konfabulator Widget",
-        "name": "main_window",
-        "width": 500,
-        "height": 500
-    },
-    "image": { 
-        "src": "Images/Sun.png",
-        "name": "sun1",
-        "hOffset": 250,
-        "vOffset": 250,
-        "alignment": "center"
-    },
-    "text": {
-        "data": "Click Here",
-        "size": 36,
-        "style": "bold",
-        "name": "text1",
-        "hOffset": 250,
-        "vOffset": 100,
-        "alignment": "center",
-        "onMouseUp": "sun1.opacity = (sun1.opacity / 100) * 90;"
+    const arrLottsGroupForCustomer = [];
+    let lottoTotalInvestment = 0;
+    function buyLottos(payAmount){
+        if(payAmount < 1000) {
+            console.log("1,00ㅜ0원 이상 지불하세요.");
+            return false;
+        }
+        lottoTotalInvestment = payAmount;
+        function printLottoGroup(singleLotto){
+            let printLottoStr = "[";
+            singleLotto.forEach((value, index) => {
+                if(index === 0)
+                    printLottoStr += value;
+                else
+                    printLottoStr +=  ", "+ value;
+            });
+            printLottoStr += "]";
+            return printLottoStr;
+        }
+        function getLottoNumbers(){
+            const randomLottoArr = [];
+            for(let i=0 ; i < 6; i++){
+                let randomLottoNum = Math.floor((Math.random() * 45) + 1)
+                if(randomLottoArr.indexOf(randomLottoNum) < 0){
+                    randomLottoArr.push(randomLottoNum);
+                }else{
+                    i--;
+                }
+            }
+            return randomLottoArr;
+        }
+        for(let i=0 ; i < payAmount / 1000 ; i++){
+            arrLottsGroupForCustomer.push(getLottoNumbers());
+        }
+        console.log("로또 " + arrLottsGroupForCustomer.length +"개를 발행했습니다.");
+        arrLottsGroupForCustomer.forEach(value => {
+            console.log(printLottoGroup(value));
+        });
     }
-}
-const newWidgetWidhNum = [];
-Object.keys(widget).forEach((key) => {
-	
-	if(typeof widget[key] === 'object'){
-		Object.keys(widget[key]).forEach((childKey) => {
-		
-			if(typeof widget[key][childKey] === 'number'){
-				newWidgetWidhNum.push(childKey);
-			}
-		});
-	}else{
-		if(typeof keyValue === 'number'){
-			newWidgetWidhNum.push(keyValue);
-		}
-	}
-});
-console.log(newWidgetWidhNum);
-
-</script>
+    function setLuckyNumber(arrNumber){
+        let winPrize = 0;
+        const winPrizeMap = {
+                                3 : 5000 ,
+                                4 : 50000 ,
+                                5 : 1500000 ,
+                                6 : 2000000000
+                            };
+        const winCountMap = {
+                                3 : 0 ,
+                                4 : 0 ,
+                                5 : 0 ,
+                                6 : 0
+        };
+    
+        function checkWhetherExistOrNot(checkValue){
+            return arrNumber.some(value => value == checkValue);
+        }
+        const winningArrLottoNumber = arrLottsGroupForCustomer.map((value, index) => {
+            return value.filter(innerValue => {
+                var innerFlag = checkWhetherExistOrNot(innerValue);
+                return innerFlag;
+            })
+        });
+        winningArrLottoNumber.forEach(value => {
+            var valueLength = value.length;
+            if(value.length >= 3){
+                winPrize += winPrizeMap[valueLength];
+                winCountMap[valueLength] += 1; 
+            }
+        });
+    
+        console.log("당첨 통계");
+        Object.keys(winCountMap).forEach(key => {
+            console.log(key + "개 일치 (" + winPrizeMap[key] +"원)" + winCountMap[key]+"개");
+        });
+        console.log("나의 수익률은 " + (parseInt(winPrize / lottoTotalInvestment * 100)) + "%입니다.")
+    }
+    buyLottos(14000);
+    
+    </script>
