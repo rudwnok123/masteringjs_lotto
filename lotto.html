@@ -1,41 +1,44 @@
 <script>
     const arrLottsGroupForCustomer = [];
     let lottoTotalInvestment = 0;
+    const LOTTO_MAX_DIGITS = 6;
+    const LOTTO_BUY_PRICE = 1000;
+    const MIN_PRIZE_COUNT = 3;
+    function getLottoGroupStr(singleLotto){
+        let printLottoStr = "[";
+        singleLotto.forEach((value, index) => {
+            if(index === 0) printLottoStr += value;
+            else printLottoStr +=  ", "+ value;
+        });
+        printLottoStr += "]";
+        return printLottoStr;
+    }
+    function getLottoNumbers(){
+        const randomLottoArr = [];
+        for(let i=0 ; i < LOTTO_MAX_DIGITS ; i++){
+            let randomLottoNum = Math.floor((Math.random() * 45) + 1)
+            if(randomLottoArr.indexOf(randomLottoNum) < 0){
+                randomLottoArr.push(randomLottoNum);
+            }else{
+                i--;
+            }
+        }
+        return randomLottoArr;
+    }
+    
     function buyLottos(payAmount){
-        if(payAmount < 1000) {
+        if(payAmount < LOTTO_BUY_PRICE) {
             console.log("1,00ㅜ0원 이상 지불하세요.");
             return false;
         }
         lottoTotalInvestment = payAmount;
-        function printLottoGroup(singleLotto){
-            let printLottoStr = "[";
-            singleLotto.forEach((value, index) => {
-                if(index === 0)
-                    printLottoStr += value;
-                else
-                    printLottoStr +=  ", "+ value;
-            });
-            printLottoStr += "]";
-            return printLottoStr;
-        }
-        function getLottoNumbers(){
-            const randomLottoArr = [];
-            for(let i=0 ; i < 6; i++){
-                let randomLottoNum = Math.floor((Math.random() * 45) + 1)
-                if(randomLottoArr.indexOf(randomLottoNum) < 0){
-                    randomLottoArr.push(randomLottoNum);
-                }else{
-                    i--;
-                }
-            }
-            return randomLottoArr;
-        }
-        for(let i=0 ; i < payAmount / 1000 ; i++){
+
+        for(let i=0 ; i < payAmount / LOTTO_BUY_PRICE ; i++){
             arrLottsGroupForCustomer.push(getLottoNumbers());
         }
         console.log("로또 " + arrLottsGroupForCustomer.length +"개를 발행했습니다.");
         arrLottsGroupForCustomer.forEach(value => {
-            console.log(printLottoGroup(value));
+            console.log(getLottoGroupStr(value));
         });
     }
     function setLuckyNumber(arrNumber){
@@ -58,13 +61,12 @@
         }
         const winningArrLottoNumber = arrLottsGroupForCustomer.map((value, index) => {
             return value.filter(innerValue => {
-                var innerFlag = checkWhetherExistOrNot(innerValue);
-                return innerFlag;
+                return checkWhetherExistOrNot(innerValue);
             })
         });
         winningArrLottoNumber.forEach(value => {
             var valueLength = value.length;
-            if(value.length >= 3){
+            if(valueLength >= MIN_PRIZE_COUNT){
                 winPrize += winPrizeMap[valueLength];
                 winCountMap[valueLength] += 1; 
             }
@@ -76,6 +78,4 @@
         });
         console.log("나의 수익률은 " + (parseInt(winPrize / lottoTotalInvestment * 100)) + "%입니다.")
     }
-    buyLottos(14000);
-    
     </script>
