@@ -1,0 +1,74 @@
+<html>
+    <head></head>
+    <body>
+        <script>
+            const lottos = [];
+            let piece = 0;//로또 발급 수량
+            const min = 1 , max = 45;//로또 최소번호 , 최대 번호
+
+            //로또 발급
+            function getLottoNumber(){
+                const lotto_list = [];
+                while( lotto_list.length < 6) {
+                    let random_number = randomNumber();
+                    if( lotto_list.indexOf( random_number) === -1)
+                        lotto_list.push( random_number);
+                }
+                lottos.push( { lotto : lotto_list.sort((a,b)=> a-b) , lucky_count : 0});
+                console.log( lotto_list);
+            }
+
+            //임의 번호 생성
+            function randomNumber () {
+                return Math.floor( Math.random() * (max-min) + min);
+            }
+
+            //로또 구입
+            function buyLottos( pay) {
+                if( isNaN( pay)) return false;
+                piece = Math.floor( pay /1000);
+
+                if( piece <1) return false;
+
+                for( let i=1; i <= piece; i++) {
+                    getLottoNumber();
+                }
+            }
+
+            //당첨 확인
+            function setLuckyNumber( ...lucky){
+                if( lucky.length !== 6) return false;
+                let total = 0;
+                const result = [
+                    { hit: 0 , amount:0 , quantity : 0},
+                    { hit: 1 , amount:0 , quantity : 0},
+                    { hit: 2 , amount:0 , quantity : 0},
+                    { hit: 3 , amount:5000 , quantity : 0},
+                    { hit: 4 , amount:50000 , quantity : 0},
+                    { hit: 5 , amount:1500000 , quantity : 0},
+                    { hit: 6 , amount:2000000000 , quantity : 0}
+                ];
+                console.log('당첨 통계');
+                console.log('---------');
+                lottos.forEach( function ( lotto_piece){
+                    lucky.forEach( function ( n) {
+                        lotto_piece.lotto.indexOf( n) !== -1 && lotto_piece.lucky_count++;                    
+                    });
+
+                    if( result[ lotto_piece.lucky_count] !== undefined && result[ lotto_piece.lucky_count]['amount'] > 0 )
+                        result[ lotto_piece.lucky_count]['quantity']++;
+                });
+
+                result.forEach( function( result_hit){
+                    if( result_hit.amount <= 0 ) return true;
+                    console.log( result_hit.hit+'개 일치 ('+result_hit.amount+'원)- ' + result_hit.quantity +'개');
+                    total += result_hit.amount * result_hit.quantity;
+                });
+
+                console.log('나의 수익률은 '+ (total / (piece*1000) * 100) +'%입니다.');
+            }
+            buyLottos(14000);
+            setLuckyNumber( 1,2,3,4,5,6);
+        </script>
+    </body>
+</html>
