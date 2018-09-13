@@ -3,8 +3,6 @@
 // ---------------------
 // 로또 당첨 번호
 var luckyNumber = [1, 2, 3, 4, 5, 6];
-// 로또 번호.length
-var lottoNumlength = 6;
 
 
 // ---------------------
@@ -16,13 +14,10 @@ var lottoNumlength = 6;
 function setLuckyNumber(...luckyNumber) {
   // console.log(luckyNumber,'당첨 번호');
 }
-// setLuckyNumber(luckyNumber);
 
-// setLuckyNumber = (...luckyNumber)=>{
-//   console.log(luckyNumber);
-// }
-
-
+  
+// 로또 번호.length
+var lottoNumlength = 6;
 let benefit = [];
 let benefitReward;
 var benefitMoney = '';
